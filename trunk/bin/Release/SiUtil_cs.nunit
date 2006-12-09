@@ -1,0 +1,7 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Default" />
+  <Config name="Default" binpathtype="Auto">
+    <assembly path="SiUtil_cs.dll" />
+    <assembly path="..\Debug\SiUtil_cs.dll" />
+  </Config>
+</NUnitProject>
