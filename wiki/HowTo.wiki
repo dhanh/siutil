@@ -1,4 +1,4 @@
-#summary How to use the !SiUtill wrapper class
+#summary How to use the SiUtil wrapper class
 #labels Phase-Deploy
 
 
