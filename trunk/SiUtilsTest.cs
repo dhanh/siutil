@@ -1,4 +1,5 @@
 /*
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''' This is the MIT License, with one addition:
 ''' I want attribution in source code form, which means any code of mine you use,
 ''' you must keep this entire license intact, including the next line:
@@ -25,7 +26,7 @@
 ''' COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
 ''' IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 ''' CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-''' #################################################
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 */
 using System;
 using NUnit.Framework;
@@ -47,6 +48,7 @@ namespace SiUtilWrapper
             string pVersion="";
             Assert.IsEmpty(pVersion);
             SiUtil.GetUSBDLLVersion(ref pVersion);
+          
 #if DEBUG
             Trace.WriteLine(pVersion);
 #endif

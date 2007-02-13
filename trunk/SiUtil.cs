@@ -1,4 +1,5 @@
 /*
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ''' This is the MIT License, with one addition:
 ''' I want attribution in source code form, which means any code of mine you use,
 ''' you must keep this entire license intact, including the next line:
@@ -25,8 +26,10 @@
 ''' COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
 ''' IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 ''' CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-''' #################################################
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 */
+
+//TODO: Finish DOC Tags for all the public functions
 
 using System;
 using System.Runtime.InteropServices;
@@ -34,44 +37,59 @@ using System.Runtime.InteropServices;
 
 namespace SiUtilWrapper
 {
+	/// <summary>
+	/// The SiUtil.dll public interface
+	/// </summary>
     unsafe public class SiUtil
     {
-		 public const int SERIALNUM_LEN = 128;
-
+		 /// <summary>
+		 /// The protocol to use to connect. 0=JTAG, 1=C2
+		 /// </summary>
         public enum ECProtocol
         {
+			  /// <summary>
+			  /// 
+			  /// </summary>
          JTAG_PROTOCOL = 0x00,
+			  /// <summary>
+			  /// 
+			  /// </summary>
          C2_PROTOCOL = 0x01
         }
 
+		 /// <summary>
+		 /// Baud Rate Enum
+		 /// </summary>
         public enum BaudRate
         {
+			  /// <summary>
+			  /// 
+			  /// </summary>
             Autodetect, baud_115200, baud_57600, baud_38400, baud_9600, baud_2400
         }
 
 
         /// <summary>
-        /// A list of possible errors returned from the programmer.
+        /// A list of error codes that may be returned from the programmer
         /// </summary>
 		  public enum ERROR_CODE
         {
-            Flash_Write_Error				= -3,
-            Target_State_Failure			= -2,
-            Target_State_Failure1		= -1,
-            Success							= 0,
-            File_Name_Or_Path_Error		= 1,
-            Com_Port_Error					= 2,
-            Download_Sequence_Error		= 3,
-            Reset_Sequence_Error       = 4,
-            Device_Erase_Error			= 5,
-            Error_Closing_ComPort		= 7,
-            Invalid_Parameter				= 8,
-            Missing_USB_Dll				= 9,
-            USB_Debug_Adapter_Error		= 10
+            Flash_Write_Error			= -3,
+            Target_State_Failure		= -2,
+            Target_State_Failure1	= -1,
+            Success						= 0,
+            File_Name_Or_Path_Error	= 1,
+            Com_Port_Error				= 2,
+            Download_Sequence_Error	= 3,
+            Reset_Sequence_Error    = 4,
+            Device_Erase_Error		= 5,
+            Error_Closing_ComPort	= 7,
+            Invalid_Parameter			= 8,
+            Missing_USB_Dll			= 9,
+            USB_Debug_Adapter_Error	= 10
          
         }
-        
-        
+                
         
 		 ///<summary>: This function is used to connect to a target C8051Fxxx device using a Serial Adapter. 
 		 /// Establishing a valid connection is necessary for all memory operations to succeed.
@@ -86,78 +104,264 @@ namespace SiUtilWrapper
 		/// 115200(1), 57600 (2), 38400 (3), 9600 (4) or 2400 (5). The default is ‘0’.</param>
 		 [DllImport("SiUtil.dll")] public static extern ERROR_CODE Connect(int nComPort, int nDisableDialogBoxes, ECProtocol nECprotocol, BaudRate nBaudRateIndex);
 
+
+        /// <summary>
+        ///This function is used to connect to a target C8051Fxxx device using a USB Debug Adapter.
+        ///Establishing a valid connection is necessary for all memory operations to succeed.
+        ///Supported Debug Adapters: USB Debug Adapter
+        /// </summary>
+        /// <param name="sSerialNum">The Serial Number of the USB adapter to connect to. If only one USB Debug 
+        /// Adapter is connected, an empty string can be used. The default is an empty string.</param>
+        /// <param name="nECprotocol">The protocol to use; 0=JTAG, 1=C2</param>
+        /// <param name="nPowerTarget">If this parameter is set to ‘1’, the USB Debug Adapter will be configured to
+        ///continue supplying power after it has been disconnected from the target device. The default is
+        ///‘0’, configuring the adapter to discontinue supplying power when disconnected.</param>
+        /// <param name="nDisableDialogBoxes">Disable (1) or enable (0) dialogs boxes within the DLL. The default is ‘0’.</param>
+		 /// <returns>ERROR_CODE</returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE ConnectUSB(ref string sSerialNum, ECProtocol nECprotocol, int nPowerTarget, int nDisableDialogBoxes);
 
+
+			/// <summary>
+			/// This function is used to download a hex file to a target C8051Fxxx device. After a successful exit
+			///from the Download() function, the target C8051xxx will be in a “Halt” state. If the device is left in
+			///the “Halt” state, it will not begin code execution until the device is reset by a Power-On reset or
+			///by a SetTargetGo() DLL function call.
+			///Supported Debug Adapters: Serial Adapter, USB Debug Adapter
+			/// </summary>
+			/// <param name="sDownloadFile">A character pointer to the beginning of a character array (string) containing
+			///the full path and filename of the file to be downloaded.</param>
+			/// <param name="nDeviceErase">When set to ‘1’ performs a device erase before the download initiates. If set
+			///to ‘0’ the part will not be erased. A device erase will erase the entire contents of the device’s
+			///Flash. The default is ‘0’.</param>
+			/// <param name="nDisableDialogBoxes">
+			/// Disable (1) or enable (0) dialogs boxes within the DLL. The default is ‘0’.
+			/// </param>
+			/// <param name="nDownloadScratchPadSFLE">
+		  /// This parameter is only for use with devices that have a
+		  /// Scratchpad Flash memory block. Currently, this includes the C8051F02x, C8051F04x,
+		  /// C8051F06x, and C8051F12x devices. For all other devices this parameter should be left in
+		  /// it’s default state. Set this parameter to ‘1’ in order to download to Scratchpad memory. When
+		  /// accessing and downloading to Scratchpad memory the only valid address range is
+		  /// 0x0000 to 0x007F. The default is ‘0’.
+			/// </param>
+			/// <param name="nBankSelect">
+		  /// This parameter is only for use with C8051F12x devices. For all other devices
+		  /// this parameter should be left in it’s default state. When using a C8051F12x derivative set this
+		  /// parameter to ‘1’, ‘2’, or ‘3’ in order to download to a specific bank. The default is ‘–1’.
+			/// </param>
+			/// <param name="nLockFlash">
+		  /// Set this parameter to ‘1’ to lock the Flash following the download. If Flash is
+		  /// locked, the DLL will no longer be able to connect to the device.
+			/// </param>
+			/// <returns>ERROR_CODE</returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE Download(string sDownloadFile, int nDeviceErase, int nDisableDialogBoxes, int nDownloadScratchPadSFLE, int nBankSelect, int nLockFlash);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nComPort"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE Disconnect(int nComPort);
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE DisconnectUSB();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ptrMem"></param>
+        /// <param name="wStartAddress"></param>
+        /// <param name="nLength"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         private static extern ERROR_CODE GetRAMMemory(ref byte ptrMem, uint wStartAddress, uint nLength);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ptrMem"></param>
+        /// <param name="wStartAddress"></param>
+        /// <param name="nLength"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         private static extern ERROR_CODE SetRAMMemory(ref byte ptrMem, uint wStartAddress, uint nLength);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ptrMem"></param>
+        /// <param name="wStartAddress"></param>
+        /// <param name="nLength"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         private static extern ERROR_CODE GetXRAMMemory(ref byte ptrMem, uint wStartAddress, uint nLength);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ptrMem"></param>
+        /// <param name="wStartAddress"></param>
+        /// <param name="nLength"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         private static extern ERROR_CODE SetXRAMMemory(ref byte ptrMem, uint wStartAddress, uint nLength);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ptrMem"></param>
+        /// <param name="wStartAddress"></param>
+        /// <param name="nLength"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE GetCodeMemory(ref byte ptrMem, uint wStartAddress, uint nLength);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ptrMem"></param>
+        /// <param name="wStartAddress"></param>
+        /// <param name="nLength"></param>
+        /// <param name="bDisableDialogs"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE SetCodeMemory(ref byte ptrMem, uint wStartAddress, uint nLength, int bDisableDialogs);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE Connected();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE SetTargetGo();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern int SetTargetHalt();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nComPort"></param>
+        /// <param name="nDisableDialogBoxes"></param>
+        /// <param name="nECprotocol"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE FLASHErase(int nComPort, int nDisableDialogBoxes, ECProtocol nECprotocol);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sSerialNum"></param>
+        /// <param name="nDisableDialogBoxes"></param>
+        /// <param name="nECprotocol"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE FLASHEraseUSB(ref string sSerialNum, int nDisableDialogBoxes, ECProtocol nECprotocol);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nComPort"></param>
+        /// <param name="nDisableDialogBoxes"></param>
+        /// <param name="DevicesBeforeTarget"></param>
+        /// <param name="DevicesAfterTarget"></param>
+        /// <param name="IRBitsBeforeTarget"></param>
+        /// <param name="IRBitsAfterTarget"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE SetJTAGDeviceAndConnect(int nComPort, int nDisableDialogBoxes, byte DevicesBeforeTarget, byte DevicesAfterTarget, short IRBitsBeforeTarget, short IRBitsAfterTarget);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sSerialNum"></param>
+        /// <param name="nPowerTarget"></param>
+        /// <param name="nDisableDialogBoxes"></param>
+        /// <param name="DevicesBeforeTarget"></param>
+        /// <param name="DevicesAfterTarget"></param>
+        /// <param name="IRBitsBeforeTarget"></param>
+        /// <param name="IRBitsAfterTarget"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE SetJTAGDeviceAndConnectUSB(ref string sSerialNum, int nPowerTarget, int nDisableDialogBoxes, byte DevicesBeforeTarget, byte DevicesAfterTarget, short IRBitsBeforeTarget, short IRBitsAfterTarget);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nSupportedBanks"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE ISupportBanking(ref int nSupportedBanks);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern ERROR_CODE GetSAFirmwareVersion();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern string GetDLLVersion ();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dwDevices"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern int USBDebugDevices (ref uint dwDevices);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dwDeviceNum"></param>
+        /// <param name="psSerialNum"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern int GetUSBDeviceSN (uint dwDeviceNum, ref string psSerialNum);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pVersionString"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern int GetUSBDLLVersion (ref string pVersionString);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>The Firmware Version</returns>
         [DllImport("SiUtil.dll")]
         public static extern int GetUSBFirmwareVersion ();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="psDeviceName"></param>
+        /// <returns></returns>
         [DllImport("SiUtil.dll")]
         public static extern int GetDeviceName (ref string psDeviceName);
 
@@ -253,7 +457,8 @@ Supported Debug Adapters: USB Debug Adapter
 C++ Prototype: extern “C” __declspec(dllimport) int__stdcall ConnectUSB(
 const char * sSerialNum=””, int nECprotocol=0, int nPowerTarget=0,
 int nDisableDialogBoxes=0);
-Parameters: 1. sSerialNumber—The serial number of the USB Debug Adapter. See Section 8 for information
+Parameters: 
+ 1. sSerialNumber—The serial number of the USB Debug Adapter. See Section 8 for information
 on obtaining the serial number of each USB Debug Adapter connected. If only one USB
 Debug Adapter is connected, an empty string can be used. The default is an empty string.
 2. nECprotocol—Connection protocol used by the target device; JTAG (0) or Silicon Laboratories
@@ -777,19 +982,19 @@ listed in Table 1.
  ******************************************************************************
 Return Code	|	Error								|	Status	|	Possible Causes
 ===============================================================================
-–3					Flash Write Error					Failed		Invalid page write, writing to the reserved area of Flash, etc.
-–2					Target State Failure				Failed		Target not in Halt State
-–1					Target State Failure				Failed		Target not Connected
-0					No error								Success		Function call completed Successfully
-1					File Name or path Error			Failed		Invalid path and/or file doesn’t exist
-2					COM Port Error						Failed		Cannot establish a connection with the selected COM port
-3					Download Sequence Error			Failed		Invalid number of bytes, requested memory operation does not exist
-4					Reset Sequence Error				Failed		The target device failed to execute a reset sequence; verify that a valid connection still exist
-5					Device Erase Error				Failed		The target device failed to execute an Erase sequence; verify Write/Erase Lock Bytes; verify that a valid connection still exists
-7					Error Closing COM Port			Failed		Could not establish a connection with the target to Close the COM port; verify that a connection exists
-8					Invalid Parameter					Failed		Invalid parameter[s] passed into the DLL
-9					USB Debug Adapter DLL Missing	Failed		The USB Debug Adapter DLL, USBHID.dll, was not found
-10					USB Debug Adapter Error			Failed		Cannot establish a connection with the selected USB Debug Adapter
+–3				Flash Write Error					Failed		Invalid page write, writing to the reserved area of Flash, etc.
+–2				Target State Failure				Failed		Target not in Halt State
+–1				Target State Failure				Failed		Target not Connected
+0				No error							Success		Function call completed Successfully
+1				File Name or path Error			    Failed		Invalid path and/or file doesn’t exist
+2				COM Port Error						Failed		Cannot establish a connection with the selected COM port
+3				Download Sequence Error			    Failed		Invalid number of bytes, requested memory operation does not exist
+4				Reset Sequence Error				Failed		The target device failed to execute a reset sequence; verify that a valid connection still exist
+5				Device Erase Error				    Failed		The target device failed to execute an Erase sequence; verify Write/Erase Lock Bytes; verify that a valid connection still exists
+7				Error Closing COM Port			    Failed		Could not establish a connection with the target to Close the COM port; verify that a connection exists
+8				Invalid Parameter					Failed		Invalid parameter[s] passed into the DLL
+9				USB Debug Adapter DLL Missing	    Failed		The USB Debug Adapter DLL, USBHID.dll, was not found
+10				USB Debug Adapter Error			    Failed		Cannot establish a connection with the selected USB Debug Adapter
 
 
  * 

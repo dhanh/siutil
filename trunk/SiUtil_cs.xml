@@ -1,0 +1,289 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SiUtil_cs</name>
+    </assembly>
+    <members>
+        <member name="T:SiUtilWrapper.SiUtil">
+            <summary>
+            The SiUtil.dll public interface
+            </summary>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.Connect(System.Int32,System.Int32,SiUtilWrapper.SiUtil.ECProtocol,SiUtilWrapper.SiUtil.BaudRate)">
+            <summary>: This function is used to connect to a target C8051Fxxx device using a Serial Adapter. 
+             Establishing a valid connection is necessary for all memory operations to succeed.
+            Supported Debug Adapters: Serial Adapter</summary>
+            <param name="nComPort">Target COM port to establish a connection. The default is ‘1’.</param>
+            <param name="nDisableDialogBoxes">Disable (1) or enable (0) dialogs boxes within the DLL. The default is ‘0’.</param>
+            <param name="nECprotocol">Connection protocol used by the target device; 
+             JTAG (0) or Silicon Laboratories 2-Wire (C2) (1). 
+             The default is ‘0’. The C2 interface is used with C8051F3xx derivative devices and the JTAG interface 
+             is used with C8051F0xx, C8051F1xx, and C8051F2xx derivative devices.</param>
+            <param name="nBaudRateIndex">Target baud rate to establish a connection; Autobaud detection (0), 
+             115200(1), 57600 (2), 38400 (3), 9600 (4) or 2400 (5). The default is ‘0’.</param>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.ConnectUSB(System.String@,SiUtilWrapper.SiUtil.ECProtocol,System.Int32,System.Int32)">
+             <summary>
+            This function is used to connect to a target C8051Fxxx device using a USB Debug Adapter.
+            Establishing a valid connection is necessary for all memory operations to succeed.
+            Supported Debug Adapters: USB Debug Adapter
+             </summary>
+             <param name="sSerialNum">The Serial Number of the USB adapter to connect to. If only one USB Debug 
+             Adapter is connected, an empty string can be used. The default is an empty string.</param>
+             <param name="nECprotocol">The protocol to use; 0=JTAG, 1=C2</param>
+             <param name="nPowerTarget">If this parameter is set to ‘1’, the USB Debug Adapter will be configured to
+            continue supplying power after it has been disconnected from the target device. The default is
+            ‘0’, configuring the adapter to discontinue supplying power when disconnected.</param>
+             <param name="nDisableDialogBoxes">Disable (1) or enable (0) dialogs boxes within the DLL. The default is ‘0’.</param>
+             <returns>ERROR_CODE</returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.Download(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+             <summary>
+             This function is used to download a hex file to a target C8051Fxxx device. After a successful exit
+            from the Download() function, the target C8051xxx will be in a “Halt” state. If the device is left in
+            the “Halt” state, it will not begin code execution until the device is reset by a Power-On reset or
+            by a SetTargetGo() DLL function call.
+            Supported Debug Adapters: Serial Adapter, USB Debug Adapter
+             </summary>
+             <param name="sDownloadFile">A character pointer to the beginning of a character array (string) containing
+            the full path and filename of the file to be downloaded.</param>
+             <param name="nDeviceErase">When set to ‘1’ performs a device erase before the download initiates. If set
+            to ‘0’ the part will not be erased. A device erase will erase the entire contents of the device’s
+            Flash. The default is ‘0’.</param>
+             <param name="nDisableDialogBoxes">
+             Disable (1) or enable (0) dialogs boxes within the DLL. The default is ‘0’.
+             </param>
+             <param name="nDownloadScratchPadSFLE">
+             This parameter is only for use with devices that have a
+             Scratchpad Flash memory block. Currently, this includes the C8051F02x, C8051F04x,
+             C8051F06x, and C8051F12x devices. For all other devices this parameter should be left in
+             it’s default state. Set this parameter to ‘1’ in order to download to Scratchpad memory. When
+             accessing and downloading to Scratchpad memory the only valid address range is
+             0x0000 to 0x007F. The default is ‘0’.
+             </param>
+             <param name="nBankSelect">
+             This parameter is only for use with C8051F12x devices. For all other devices
+             this parameter should be left in it’s default state. When using a C8051F12x derivative set this
+             parameter to ‘1’, ‘2’, or ‘3’ in order to download to a specific bank. The default is ‘–1’.
+             </param>
+             <param name="nLockFlash">
+             Set this parameter to ‘1’ to lock the Flash following the download. If Flash is
+             locked, the DLL will no longer be able to connect to the device.
+             </param>
+             <returns>ERROR_CODE</returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.Disconnect(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="nComPort"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.DisconnectUSB">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetRAMMemory(System.Byte@,System.UInt32,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="ptrMem"></param>
+            <param name="wStartAddress"></param>
+            <param name="nLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.SetRAMMemory(System.Byte@,System.UInt32,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="ptrMem"></param>
+            <param name="wStartAddress"></param>
+            <param name="nLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetXRAMMemory(System.Byte@,System.UInt32,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="ptrMem"></param>
+            <param name="wStartAddress"></param>
+            <param name="nLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.SetXRAMMemory(System.Byte@,System.UInt32,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="ptrMem"></param>
+            <param name="wStartAddress"></param>
+            <param name="nLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetCodeMemory(System.Byte@,System.UInt32,System.UInt32)">
+            <summary>
+            
+            </summary>
+            <param name="ptrMem"></param>
+            <param name="wStartAddress"></param>
+            <param name="nLength"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.SetCodeMemory(System.Byte@,System.UInt32,System.UInt32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ptrMem"></param>
+            <param name="wStartAddress"></param>
+            <param name="nLength"></param>
+            <param name="bDisableDialogs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.Connected">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.SetTargetGo">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.SetTargetHalt">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.FLASHErase(System.Int32,System.Int32,SiUtilWrapper.SiUtil.ECProtocol)">
+            <summary>
+            
+            </summary>
+            <param name="nComPort"></param>
+            <param name="nDisableDialogBoxes"></param>
+            <param name="nECprotocol"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.FLASHEraseUSB(System.String@,System.Int32,SiUtilWrapper.SiUtil.ECProtocol)">
+            <summary>
+            
+            </summary>
+            <param name="sSerialNum"></param>
+            <param name="nDisableDialogBoxes"></param>
+            <param name="nECprotocol"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.SetJTAGDeviceAndConnect(System.Int32,System.Int32,System.Byte,System.Byte,System.Int16,System.Int16)">
+            <summary>
+            
+            </summary>
+            <param name="nComPort"></param>
+            <param name="nDisableDialogBoxes"></param>
+            <param name="DevicesBeforeTarget"></param>
+            <param name="DevicesAfterTarget"></param>
+            <param name="IRBitsBeforeTarget"></param>
+            <param name="IRBitsAfterTarget"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.SetJTAGDeviceAndConnectUSB(System.String@,System.Int32,System.Int32,System.Byte,System.Byte,System.Int16,System.Int16)">
+            <summary>
+            
+            </summary>
+            <param name="sSerialNum"></param>
+            <param name="nPowerTarget"></param>
+            <param name="nDisableDialogBoxes"></param>
+            <param name="DevicesBeforeTarget"></param>
+            <param name="DevicesAfterTarget"></param>
+            <param name="IRBitsBeforeTarget"></param>
+            <param name="IRBitsAfterTarget"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.ISupportBanking(System.Int32@)">
+            <summary>
+            
+            </summary>
+            <param name="nSupportedBanks"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetSAFirmwareVersion">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetDLLVersion">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.USBDebugDevices(System.UInt32@)">
+            <summary>
+            
+            </summary>
+            <param name="dwDevices"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetUSBDeviceSN(System.UInt32,System.String@)">
+            <summary>
+            
+            </summary>
+            <param name="dwDeviceNum"></param>
+            <param name="psSerialNum"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetUSBDLLVersion(System.String@)">
+            <summary>
+            
+            </summary>
+            <param name="pVersionString"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetUSBFirmwareVersion">
+            <summary>
+            
+            </summary>
+            <returns>The Firmware Version</returns>
+        </member>
+        <member name="M:SiUtilWrapper.SiUtil.GetDeviceName(System.String@)">
+            <summary>
+            
+            </summary>
+            <param name="psDeviceName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SiUtilWrapper.SiUtil.ECProtocol">
+            <summary>
+            The protocol to use to connect. 0=JTAG, 1=C2
+            </summary>
+        </member>
+        <member name="F:SiUtilWrapper.SiUtil.ECProtocol.JTAG_PROTOCOL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:SiUtilWrapper.SiUtil.ECProtocol.C2_PROTOCOL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SiUtilWrapper.SiUtil.BaudRate">
+            <summary>
+            Baud Rate Enum
+            </summary>
+        </member>
+        <member name="F:SiUtilWrapper.SiUtil.BaudRate.Autodetect">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:SiUtilWrapper.SiUtil.ERROR_CODE">
+            <summary>
+            A list of error codes that may be returned from the programmer
+            </summary>
+        </member>
+    </members>
+</doc>
